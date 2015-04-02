@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="." default="publish">
+	
+	<property name="build" value="build"/>
+	<ivy:settings file="/home/ollie/workspace/ivy_settings/ivysettings.xml" />
+	
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="lib"/>
+	</target>
+	
+	<target name="init" depends="clean">
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<target name="compile" depends="init">
+		<!-- Compile the java code -->
+		<javac srcdir="src" destdir="${build}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<classpath>
+			</classpath>
+		</javac>
+	</target>
+	
+  	<target name="jar" depends="compile">
+		<!-- Build the jar file -->
+		<jar basedir="${build}" destfile="${build}/lastfm.jar"/>
+	</target>
+	
+	<target name="publish" depends="jar">
+		<ivy:retrieve />
+        <ivy:publish resolver="ivysvn" pubrevision="1.01" update="true" overwrite="true">
+        	<artifacts pattern="${build}/[artifact].[ext]"/>
+        </ivy:publish>
+		<delete dir="${build}"/>
+		<delete dir="lib"/>
+	</target>
+  	
+</project>
